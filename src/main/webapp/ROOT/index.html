@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Highcharts Example</title>
+		<title>Tweets Cloud</title>
 <style type="text/css">
 body {
     background-image: url(http://twitterpuzzle.herokuapp.com/assets/outputbg.jpg);
@@ -21,8 +21,11 @@ $(function () {
             var excludereplies = $("#exclude_replies").val();
             document.getElementById("error").innerHTML="";
 
-
-        $.ajax({
+	   if(isNaN(count)) count=200;
+	   if(count<=0) count=200;
+           if(inputName=="") inputName="iambaskar";
+	                   
+       $.ajax({
             url :"http://twitterpuzzle.apigeng.com/TweetsCloud/v1/buildcloud/"+inputName+"?sample="+count+"&include_rts="+includerts+"&exclude_replies="+excludereplies,
             success: function(data)  {
 //              alert(data);  
@@ -57,7 +60,7 @@ $(function () {
                     backgroundColor: 'transparent'
                 },
                 title: {
-                    text: 'Tweets Cloud'
+                    text: '@'+inputName
                 },
                 subtitle: {
                     text: ''
@@ -122,25 +125,25 @@ $(function () {
 		</script>
 	</head>
 	<body>
-        <div align="center">
+        <div align="center"><b><i>The Mystery of the Twitter Numbers! Generate and discover it!</b></i>
         <img src="http://www.officialpsds.com/images/thumbs/Cracked-Twitter-Logo-psd47658.png" style="min-width: 250px; height: 250px; float:right;clear:left; vertical-align:middle;"/>
 </div>
 <label>Twitter handle: @</label>
-<input id="twitterhandle" type="text"/>
+<input id="twitterhandle" type="text" value="iambaskar" title="Defaults to @iambaskar"//>
 </br>
 <label>Sample:</label>
-<input id="count" type="text" value="200"/>
+<input id="count" type="text" value="200" title="Defaults to 200 if NaN or <= 0"/>
 </br>
 <label>IncludeRetweets:</label>
-<input id="include_rts" type="text" value="false"/>
+<input id="include_rts" type="text" value="false" title="Default to false, if not true"/>
 </br>
 <label>ExcludeReplies:</label>
-<input id="exclude_replies" type="text" value="false"/>
+<input id="exclude_replies" type="text" value="false" title="Default to false, if not false"/>
 </br>
-<input id="button" type="button" value="Generate Cloud"/>
+<input id="button" type="submit" value="Generate Cloud"/>
 
 <H1><p id="error" align="center"><font color="red"></font></p></H1>
-<div id="container" style="min-width: 100%; height: 900px; margin: 0 auto"></div>
+<div id="container" style="min-width: 100%; height: 780px; margin: 0 auto"></div>
        
 
 <script src="highcharts.js"></script>
