@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Highcharts Example</title>
+<style type="text/css">
+body {
+    background-image: url(http://twitterpuzzle.herokuapp.com/assets/outputbg.jpg);
+    background-size: 100%;
+}
+</style>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script type="text/javascript">
+$(function () {
+    var chart;
+    $(document).ready(function() {
+        $("#button").click(function() {
+            var inputName = $("#twitterhandle").val();
+            var count = $("#count").val();
+            var includerts = $("#include_rts").val();
+            var excludereplies = $("#exclude_replies").val();
+            document.getElementById("error").innerHTML="";
+
+
+        $.ajax({
+            url :"http://twitterpuzzle.apigeng.com/TweetsCloud/v1/buildcloud/"+inputName+"?sample="+count+"&include_rts="+includerts+"&exclude_replies="+excludereplies,
+            success: function(data)  {
+//              alert(data);  
+              var jsonData = $.parseJSON(data);
+              $.each(jsonData, function() {
+//                   console.log(jsonData.name); 
+              });
+              var names = [];
+              var datas = [];
+               var seriesData = new Array(); 
+//              console.log(jsonData.length);
+              for (var i=0; i<jsonData.length; i++ ) {
+                var tmpArray = [];
+                names.push("'"+jsonData[i].name+"'");
+                datas[i] = jsonData[i].data;
+                tmpArray[0] = jsonData[i].data; 
+                for (j=1; j<jsonData.length; j++) {
+                    tmpArray[j] = 0;    
+                }
+                seriesData.push({'name':jsonData[i].name, 'data' : tmpArray });
+                //console.log( jsonData[i].name +"  ====   "+jsonData[i].data);
+              }
+ /*             console.log("LEN:"+names.length);
+              for (var i=0; i<names.length; i++ ) {
+                    console.log(names[i]);
+              }
+*/
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'container',
+                    type: 'bar',
+                    backgroundColor: 'transparent'
+                },
+                title: {
+                    text: 'Tweets Cloud'
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: names,
+                    title: {
+                        text: 'TweetsCloud'
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: null,
+                        align: 'right'
+                    }
+                },
+                tooltip: {
+                    formatter: function() {
+                        return ''+ this.x +': '+ this.y;
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -100,
+                    y: 100,
+                    floating: true,
+                    borderWidth: 1,
+                    backgroundColor: '#FFFFFF',
+                    shadow: true
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    name :'Tweets',
+                    data : datas
+                }]
+            }); 
+
+            },
+            error : function(error) {
+                document.getElementById("error").innerHTML=error.responseText;
+                document.getElementById("container").innerHTML="";
+            }   
+        });
+
+        });    
+
+    });
+    
+});
+		</script>
+	</head>
+	<body>
+        <div align="center">
+        <img src="http://www.officialpsds.com/images/thumbs/Cracked-Twitter-Logo-psd47658.png" style="min-width: 250px; height: 250px; float:right;clear:left; vertical-align:middle;"/>
+</div>
+<label>Twitter handle: @</label>
+<input id="twitterhandle" type="text"/>
+</br>
+<label>Sample:</label>
+<input id="count" type="text" value="200"/>
+</br>
+<label>IncludeRetweets:</label>
+<input id="include_rts" type="text" value="false"/>
+</br>
+<label>ExcludeReplies:</label>
+<input id="exclude_replies" type="text" value="false"/>
+</br>
+<input id="button" type="button" value="Generate Cloud"/>
+
+<H1><p id="error" align="center"><font color="red"></font></p></H1>
+<div id="container" style="min-width: 100%; height: 900px; margin: 0 auto"></div>
+       
+
+<script src="highcharts.js"></script>
+<script src="exporting.js"></script>
+
+
+</body>
+</html>
